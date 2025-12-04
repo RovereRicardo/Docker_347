@@ -1,0 +1,171 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #eaeaea;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table .button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.pointsTd {
+    display: flex;
+    justify-content: center;
+}
+
+.th-custom {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+.forms {
+    display: flex;
+    justify-content: center;
+}
+
+.loginForm {
+    display: inline-block;
+    align-content: center;
+    width: 250px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.nav button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.match-info {
+    background-color: #f1f1f1;
+    padding: 10px;
+}
+
+.tabs {
+    display: flex;
+    margin-top: 10px;
+}
+
+.tabs button {
+    background-color: #ccc;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.tabs button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.players-section {
+    margin: 20px;
+}
+
+ul {
+    list-style-type: none;
+    text-align: center;
+}
+
+.details-form {
+    display: flex;
+    justify-content: center;
+}
+
+.details {
+    display: flex;
+    justify-content: space-around;
+}
+
+.forms {
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    text-align: right;
+    padding: 10px 20px;
+}
+
+a {
+    text-align: center;
+}
+
+.forms-align {
+    display: inline;
+    justify-content: center;
+    align-content: center;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.div1 {
+    grid-area: 1 / 2 / 3 / 3;
+    text-align: center;
+    font-size: 100px;
+}
+
+.div2 {
+    grid-area: 3 / 2 / 5 / 3;
+    text-align: center;
+    font-size: 100px;
+}
+
+.div3 {
+    grid-area: 3 / 4 / 5 / 5;
+    text-align: center;
+    font-size: 100px;
+}
+
+.div4 {
+    grid-area: 1 / 4 / 3 / 5;
+    text-align: center;
+    font-size: 100px;
+}
+
+.ranking {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-gap {
+    margin: 0px 10px
+}

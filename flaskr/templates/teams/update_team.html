@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %} Update Team {{ team.team_name }} {% endblock %}
+{% block content %}
+
+{% if current_user.username == 'admin' or current_user.get_id()|int == id_coach.id_coach_creator %}
+<section class="details">
+    <div class="last-played">
+        <h2>Update Team</h2>
+        <p>Edit the form and submit to update the team details.</p>
+        {{ render_form(form, extra_classes="forms") }}
+            <br>
+            <a href="{{ url_for('team.view_teams') }}" class="btn btn-secondary col-lg">Cancel</a>
+    </div>
+</section>
+{% elif not current_user.is_authenticated %}
+<section class="details">
+    <div class="last-played">
+        <br>
+        <h2>You must be logged in, to be able to update a Team.</h2>
+        <a href="{{ url_for('user.register') }}">Don't have an account? Register</a>
+
+    </div>
+</section>
+{% else %}
+<section class="details">
+    <div class="last-played">
+        <br>
+        <h2>You cannot edit a Team that doesn't belong to you.</h2>
+        <a href="{{ url_for('user.login') }}">Login with the correct account. Login</a>
+    </div>
+</section>
+{% endif %}
+<br>
+{% endblock %}
+

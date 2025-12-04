@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %} BasketStats {% endblock %}
+{% block content %}
+    <div class="parent">
+        <div class="div1"><a href="{{ url_for('match.view_matches') }}"><i class="bi bi-calendar2-date"></i><br>
+            <h3>Matches</h3></a></div>
+        <div class="div2"><a href="{{ url_for('player.view_all_players') }}"><i class="bi bi-person-vcard"></i><br>
+            <h3>Players</h3></a></div>
+        <div class="div3"><a href="{{ url_for('team.ranking') }}"><i class="bi bi-diagram-2-fill"></i><br>
+            <h3>Ranking</h3></a></div>
+        <div class="div4"><a href="{{ url_for('team.view_teams') }}"><i class="bi bi-shield-shaded"></i><br>
+            <h3>Teams</h3></a>
+    </div>
+{% endblock %}

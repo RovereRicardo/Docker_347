@@ -1,0 +1,219 @@
+{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    {% block head %}
+        {{ bokeh_css }}
+        {{ bokeh_js }}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+        <link rel="stylesheet" href="../static/font-awesome-4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <link href="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.2.min.css" rel="stylesheet" type="text/css">
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.2.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            window.onload = function () {
+                const timers = {}; // Store timers for each player
+
+                // Get the match ID from the DOM
+                const matchID = document.querySelector(".players-section").getAttribute("data-match-id");
+
+                const matchTimer = {
+                    minutes: 0,
+                    seconds: 0,
+                    interval: null,
+                    running: false
+                };
+
+                function startMatchTimer() {
+                    if (!matchTimer.running) {
+                        matchTimer.running = true;
+                        matchTimer.interval = setInterval(() => {
+                            matchTimer.seconds++;
+                            if (matchTimer.seconds > 59) {
+                                matchTimer.minutes++;
+                                matchTimer.seconds = 0;
+                            }
+
+                            // Save match time in localStorage
+                            localStorage.setItem(
+                                `match_timer_${matchID}`,
+                                matchTimer.minutes.toString().padStart(2, "0") + ":" + matchTimer.seconds.toString().padStart(2, "0")
+                            );
+
+                            // Update UI
+                            document.getElementById("minutes_").innerHTML = matchTimer.minutes.toString().padStart(2, "0");
+                            document.getElementById("seconds_").innerHTML = matchTimer.seconds.toString().padStart(2, "0");
+
+                        }, 1000);
+
+                        // Start all player timers
+                        document.querySelectorAll(".player-row").forEach(row => {
+                            let playerID = row.getAttribute("data-player-id");
+                            startTimer(playerID);
+                        });
+                    }
+                }
+
+                function pauseMatchTimer() {
+                    if (matchTimer.running) {
+                        clearInterval(matchTimer.interval);
+                        matchTimer.running = false;
+
+                        // Stop all player timers
+                        document.querySelectorAll(".player-row").forEach(row => {
+                            let playerID = row.getAttribute("data-player-id");
+                            stopTimer(playerID);
+                        });
+                    }
+                }
+
+                function startTimer(playerID) {
+                    const appendMins = document.getElementById("minutes_" + playerID);
+                    const appendSecs = document.getElementById("seconds_" + playerID);
+
+                    if (!timers[playerID]) {
+                        timers[playerID] = {minutes: 0, seconds: 0, interval: null};
+                    }
+
+                    // Get saved time from localStorage
+                    const savedTime = localStorage.getItem(`timer_${matchID}_${playerID}`) || "00:00";
+                    let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
+
+                    if (isNaN(savedMinutes)) savedMinutes = 0;
+                    if (isNaN(savedSeconds)) savedSeconds = 0;
+
+                    timers[playerID].minutes = savedMinutes;
+                    timers[playerID].seconds = savedSeconds;
+
+                    clearInterval(timers[playerID].interval);
+
+                    timers[playerID].interval = setInterval(function () {
+                        timers[playerID].seconds++;
+                        if (timers[playerID].seconds > 59) {
+                            timers[playerID].minutes++;
+                            timers[playerID].seconds = 0;
+                        }
+
+                        const timeString = timers[playerID].minutes.toString().padStart(2, "0") + ":" + timers[playerID].seconds.toString().padStart(2, "0");
+                        localStorage.setItem(`timer_${matchID}_${playerID}`, timeString);
+
+                        appendMins.innerHTML = timers[playerID].minutes.toString().padStart(2, "0");
+                        appendSecs.innerHTML = timers[playerID].seconds.toString().padStart(2, "0");
+                    }, 1000);
+                }
+
+                function stopTimer(playerID) {
+                    if (timers[playerID]) {
+                        clearInterval(timers[playerID].interval);
+                        timers[playerID].interval = null;
+                    }
+                }
+
+                function loadTimers() {
+                    const matchTime = localStorage.getItem(`match_timer_${matchID}`) || "00:00";
+                    let [matchMinutes, matchSeconds] = matchTime.split(":").map(Number);
+                    if (isNaN(matchMinutes)) matchMinutes = 0;
+                    if (isNaN(matchSeconds)) matchSeconds = 0;
+
+                    matchTimer.minutes = matchMinutes;
+                    matchTimer.seconds = matchSeconds;
+
+                    document.getElementById("minutes_").innerHTML = matchMinutes.toString().padStart(2, "0");
+                    document.getElementById("seconds_").innerHTML = matchSeconds.toString().padStart(2, "0");
+
+                    document.querySelectorAll(".player-row").forEach(row => {
+                        let playerID = row.getAttribute("data-player-id");
+                        const savedTime = localStorage.getItem(`timer_${matchID}_${playerID}`) || "00:00";
+                        let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
+
+                        if (isNaN(savedMinutes)) savedMinutes = 0;
+                        if (isNaN(savedSeconds)) savedSeconds = 0;
+
+                        document.getElementById("minutes_" + playerID).innerHTML = savedMinutes.toString().padStart(2, "0");
+                        document.getElementById("seconds_" + playerID).innerHTML = savedSeconds.toString().padStart(2, "0");
+                    });
+                }
+
+                // Attach event listeners
+                document.querySelector(".players-section .button-start").addEventListener("click", startMatchTimer);
+                document.querySelector(".players-section .button-stop").addEventListener("click", pauseMatchTimer);
+
+                // Load timers on page load
+                loadTimers();
+            };
+        </script>
+        <script>
+            function toggleDeletedPlayers() {
+                const deletedRows = document.querySelectorAll('.deleted-player');
+                deletedRows.forEach(row => {
+                    row.classList.toggle('d-none');
+                });
+            }
+        </script>
+        <script>
+            function toggleDeletedTeams() {
+                const deletedRows = document.querySelectorAll('.deleted-team');
+                deletedRows.forEach(row => {
+                    row.classList.toggle('d-none');
+                });
+            }
+        </script>
+
+    {% endblock %}
+</head>
+<body>
+<header>
+    {% block header %}
+        <h1>BasketStats Tracker</h1>
+
+        {% if current_user.is_authenticated %}
+            <h4>Welcome {{ current_user.username }}</h4>
+            <form action="{{ url_for('user.logout') }}" method="POST">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        {% else %}
+            <a href="{{ url_for('user.login') }}" class="btn btn-success">Login</a>
+            <a href="{{ url_for('user.register') }}" class="btn btn-info">Signup</a>
+        {% endif %}
+    {% endblock %}
+</header>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="navbar-nav mr-auto">
+        {{ render_nav_item('index', 'Home') }}
+        {{ render_nav_item('team.view_teams', 'Teams') }}
+        {{ render_nav_item('player.view_all_players', 'Players') }}
+        {{ render_nav_item('match.view_matches', 'Matches') }}
+        {{ render_nav_item('team.ranking','Ranking') }}
+    </div>
+</nav>
+<br>
+{% block content %}
+    {% block graph %}
+    {% endblock %}
+{% endblock %}
+{% block error %} {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+{% endblock %}
+
+
+</body>
+</html>

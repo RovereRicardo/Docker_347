@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+{% block title %} New Team {% endblock %}
+{% block content %}
+    <section class="details">
+        <div class="forms-align">
+            <br>
+            <h2>Signup</h2>
+            <p>Fill the form and submit to Sign In</p>
+            {{ render_form(form, extra_classes="forms") }}
+            <br>
+            <a href="/" class="btn btn-secondary col-lg">Cancel</a>
+            <a href="{{ url_for('user.login') }}">Already have an account? Login</a>
+        </div>
+    </section>
+{% endblock %}

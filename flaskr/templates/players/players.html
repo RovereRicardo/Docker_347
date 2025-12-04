@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %} BasketStats - Player {% endblock %}
+{% block content %}
+    <section class="players-section">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr class="th-custom">
+                <th>Name</th>
+                <th>Number</th>
+                <th>Position</th>
+                <th>Height</th>
+                <th>Birthday</th>
+                <th>Nationality</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="players-list">
+            {% for player in players %}
+                <tr>
+                    <td style="display: none">{{ player.id_player }}</td>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.number }}</td>
+                    <td>{{ player.position }}</td>
+                    <td>{{ player.height }}</td>
+                    <td>{{ player.birthday }}</td>
+                    <td>{{ player.nationality }}</td>
+                    <td>
+                        <a href="{{ url_for('player.view_player', id_player=player.id_player, id_team=player.id_team) }}"
+                           class="mr-3"
+                           title="View Player"><span class="fa fa-eye"></span></a>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary ml-0 pull-right">Home</a>
+    </section>
+{% endblock %}

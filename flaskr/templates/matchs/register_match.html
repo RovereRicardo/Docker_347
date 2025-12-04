@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %} New Match {% endblock %}
+{% block content %}
+    {% if current_user.is_authenticated %}
+        <section class="details">
+            <div class="last-played">
+                <br>
+                <h2>Create New Match</h2>
+                <p>Fill the form and submit to create a new match.</p>
+                {{ render_form(form, extra_classes="forms") }}
+                <br>
+                <a href="/" class="btn btn-secondary col-lg">Cancel</a>
+            </div>
+        </section>
+    {% else %}
+        <section class="details">
+            <div class="last-played">
+                <br>
+                <h2>You must be Logged in, to be able to Create a new Match</h2>
+            </div>
+        </section>
+    {% endif %}
+    <br>
+{% endblock %}
