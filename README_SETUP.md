@@ -83,3 +83,7 @@ Rovere_Ricardo_DEVA1A_2025_164/
 ```bash
   docker exec -it basketstats-db-dev mysql -u root -p basketstats_dev
 ```
+
+### Login Credentials on Website
+- Username: admin
+- Password: admin
