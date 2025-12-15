@@ -21,6 +21,31 @@ Rovere_Ricardo_DEVA1A_2025_164/
     └── ...
 ```
 
+### Tech Stack
+- Frontend Flask , Bootstrap5
+- Backend Python 3.9
+- Database MySQL
+
+### Architecture Docker
+- Environment : MySQL , Flask , Python (app-dev container)
+- Test : MySQL , Flask, Python (app-test container)
+
+### Caractéristiques Differences
+- Env. Développement 
+```bash
+- Caractéristique --> Chargement de code 
+  - Env. Développement
+   . Changements du code modifiable directement via le code source
+  - Env. de Prod
+   . Code source fixe (Pas de changement si le code source est modifié)
+   
+- Caractéristique --> Variables d`environnement
+  - Env. Développement
+   . Verbose = ON, debug = ON -> Pour faire la confirmation : Les logs apparait dans le container sur DockerHub - Containers. Container app-dev
+  - Env. Prod
+    . Verbose = Off , debug = off -> Pour faire la confirmation :  Pas de log dans le container sur DockerHub - Containers. Container app-prod
+```
+
 ### ⚙️ Configuration
 #### 1. Clone the repository:
    ```bash

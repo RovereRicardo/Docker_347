@@ -60,6 +60,7 @@ services:
       - "5001:5000"
     environment:
       - FLASK_ENV=production
+      - NAME_FILE_DUMP_SQL_BD=flaskr/database/rovere_ricardo_deva1a_basketstats_164_2025-prod.sql
       - FLASK_DEBUG=0
       - VERBOSE=OFF
       - AUTO_LOGIN=""
@@ -84,7 +85,7 @@ services:
       MYSQL_DATABASE: basketstats_prod
     volumes:
       - mysql-prod-data:/var/lib/mysql
-      - ./flaskr/database/rovere_ricardo_deva1a_basketstats_164_2025.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./flaskr/database/rovere_ricardo_deva1a_basketstats_164_2025-prod.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3309:3306"
     networks:

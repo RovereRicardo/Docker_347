@@ -97,7 +97,8 @@ def import_dump():
 
 
 # Import au démarrage seulement
-import_dump()
+if os.getenv("FLASK_ENV") == "development":
+    import_dump()
 
 # Connexion globale pour l'application
 connection = pymysql.connect(
