@@ -1,9 +1,7 @@
 services:
   # Environnement de développement
   app-dev:
-    build:
-      context: .
-      target: development
+    image: mtiii/basketstats:dev
     container_name: basketstats-dev
     ports:
       - "5000:5000"
@@ -52,9 +50,7 @@ services:
 
   # Environnement de production
   app-prod:
-    build:
-      context: .
-      target: production
+    image: mtiii/basketstats:prod
     container_name: basketstats-prod
     ports:
       - "5001:5000"

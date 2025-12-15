@@ -1,114 +1,415 @@
-### 📋 Prerequisites
-- Docker installed (Get docker [here](https://www.docker.com/get-started/))
-- Docker Compose installed (Get docker compose [here](https://docs.docker.com/compose/install/))
-- Git installed (Get git [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)) [ Opinional ]
+# 🐳 Guide de Configuration Docker - Basket Stats
 
+Guide complet pour déployer l'application Basket Stats avec Docker et Docker Compose.
 
-### 🏗️ Project Structure
-``` plaintext
-Rovere_Ricardo_DEVA1A_2025_164/
-├── docker-compose.yml          # Docker services configuration
-├── Dockerfile                  # Application image definition
-├── requirements.txt            # Python dependencies
-├── run_app.py                  # Application entry point
-└── flaskr/                     # Flask application
+- [GitHub Repository](https://github.com/RovereRicardo/Docker_347)
+- [Docker Hub Repository](https://hub.docker.com/r/RovereRicardo/basketstats)
+- [Docker Hub Image - Développement](https://hub.docker.com/repository/docker/mtiii/basketstats/tags/dev/sha256:cca787973a36dd31b4163dd85d384c82406db591063bd159749ca4b0240bd79a)
+- [Docker Hub Image - Production](https://hub.docker.com/repository/docker/mtiii/basketstats/tags/dev/sha256:cca787973a36dd31b4163dd85d384c82406db591063bd159749ca4b0240bd79a)
+---
+## 🐳 Images
+| Environnement | Commande Docker Pull               |
+|---------------|------------------------------------|
+| Prod          | docker pull mtiii/basketstats:prod |
+| Dev           | docker pull mtiii/basketstats:dev  |
+---
+
+## 📋 Prérequis
+
+- [Docker](https://www.docker.com/get-started/) installé
+- [Docker Compose](https://docs.docker.com/compose/install/) installé
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (optionnel)
+- [Compte Docker Hub](https://hub.docker.com) (pour récupérer les images)
+
+---
+
+## 🏗️ Structure du Projet
+
+```plaintext
+Docker_347/
+├── docker-compose.yml          # Orchestration des services Docker
+├── Dockerfile                  # Configuration multi-étapes de build
+├── requirements.txt            # Dépendances Python
+├── .env                        # Variables d'environnement
+├── run_app.py                  # Point d'entrée de l'application
+└── flaskr/                     # Application Flask
     ├── __init__.py
     ├── database/
-    │   ├── db.py
-    │   └── rovere_ricardo_deva1a_basketstats_164_2025.sql
+    │   ├── db.py               # Logique de connexion à la base de données
+    │   ├── rovere_ricardo_deva1a_basketstats_164_2025.sql      # Dump dev
+    │   └── rovere_ricardo_deva1a_basketstats_164_2025-prod.sql # Dump prod
     ├── templates/
     ├── static/
     └── ...
 ```
 
-### Tech Stack
-- Frontend Flask , Bootstrap5
-- Backend Python 3.9
-- Database MySQL
+---
 
-### Architecture Docker
-- Environment : MySQL , Flask , Python (app-dev container)
-- Test : MySQL , Flask, Python (app-test container)
+## 🛠 Stack Technologique
 
-### Caractéristiques Differences
-- Env. Développement 
+| Composant | Technologie |
+|-----------|-----------|
+| Frontend  | Flask + Bootstrap 5 |
+| Backend   | Python 3.12 |
+| Base de données  | MySQL 8.0 |
+| Serveur Web (Prod) | Gunicorn |
+
+---
+
+## 🌐 Architecture Docker
+
+### Vue d'ensemble des Services
+
+| Service | Nom du Conteneur | Port | Environnement | Objectif |
+|---------|------------------|------|---------------|----------|
+| `app-dev` | basketstats-dev | 5000 | Développement | Application Flask avec rechargement automatique |
+| `db-dev` | basketstats-mysql-dev | 3308 | Développement | MySQL avec données complètes |
+| `app-prod` | basketstats-prod | 5001 | Production | Application Flask avec Gunicorn |
+| `db-prod` | basketstats-mysql-prod | 3309 | Production | MySQL avec tables vides |
+
+### Différences Clés
+
+| Fonctionnalité | Développement | Production |
+|----------------|---------------|-----------|
+| **Modifications du Code** | Rechargement automatique via montage de volumes | Code fixe (reconstruction nécessaire) |
+| **Mode Debug** | `FLASK_DEBUG=1` | `FLASK_DEBUG=0` |
+| **Journalisation** | `VERBOSE=ON` (logs détaillés) | `VERBOSE=OFF` (logs minimaux) |
+| **Connexion Auto** | `AUTO_LOGIN=admin` | `AUTO_LOGIN=""` (désactivé) |
+| **Base de Données** | Données complètes avec matchs d'exemple | Tables vides (structure uniquement) |
+| **Serveur Web** | Serveur de développement Flask | Gunicorn (4 workers) |
+
+---
+
+## ⚙️ Installation & Configuration
+
+### 1. Cloner le Dépôt
+
 ```bash
-- Caractéristique --> Chargement de code 
-  - Env. Développement
-   . Changements du code modifiable directement via le code source
-  - Env. de Prod
-   . Code source fixe (Pas de changement si le code source est modifié)
-   
-- Caractéristique --> Variables d`environnement
-  - Env. Développement
-   . Verbose = ON, debug = ON -> Pour faire la confirmation : Les logs apparait dans le container sur DockerHub - Containers. Container app-dev
-  - Env. Prod
-    . Verbose = Off , debug = off -> Pour faire la confirmation :  Pas de log dans le container sur DockerHub - Containers. Container app-prod
+git clone https://github.com/RovereRicardo/Docker_347.git
+cd Docker_347
 ```
 
-### ⚙️ Configuration
-#### 1. Clone the repository:
-   ```bash
-   git clone {ulr_repository}
-   ```
-#### 2. Environment variables:
-   - Create a `.env` file in the root directory.
-     - Add necessary environment variables (e.g., `FLASK_APP`, `FLASK_ENV`, database credentials).
-       - Exemple :
-         ```env
-             DB_NAME=basketstats_dev
-             DB_HOST=db-dev
-             DB_USER=root
-             DB_PASSWORD=root
-             DB_PORT=3306
-             SECRET_KEY=your-secret-key-here
-             FLASK_DEBUG=1
-             VERBOSE=ON
-         ```
-#### 3. Docker Compose configuration:
-   - The `docker-compose.yml` file defines four services: `dev` and `prod` (the Flask application) and `db-dev` (the MySQL database).
-   - Ensure the ports and environment variables are correctly set according to your needs.
-   - Services : 
-     - db-dev : MySQL database for development Port: 3308
-     - app-dev : Flask application in development mode Port: 5000
-     - db-prod : MySQL database for production Port: 3309
-     - app-prod : Flask application in production mode Port: 5001
+### 2. Variables d'Environnement
 
-#### 4. Start the Services:
-   - Run the following command to build and start the services:
-     ```bash
-     docker compose build
-     ```
-     To build specific service (e.g., development):
-     ```bash
-     docker compose build app-dev
-     docker compose build app-prod
-     ```
-   - This command will build the Docker images and start the containers for both the Flask application and the MySQL database.
-   - Start all services:
-     ```bash
-     docker compose up -d
-     ```
-   - Verify that the services are running:
-     ```bash
-     docker compose ps
-     ```
-#### 5. Access the Application:
-   - Open your web browser and navigate to:
-     - Development: `http://localhost:5000`
-     - Production: `http://localhost:5001`
+Le fichier `.env` est déjà configuré avec les valeurs par défaut de développement :
 
-### 🔧 Development Workflow
-#### Changes to code are automatically detected in development environment.
-1. Edit any Python files in the `flaskr/` directory.
-2. Save the changes.
-3. Refresh your web browser to see the updates.
-
-### Accessing the Database
-```bash
-  docker exec -it basketstats-db-dev mysql -u root -p basketstats_dev
+```env
+DB_NAME=basketstats_dev
+DB_HOST=db-dev
+DB_USER=root
+DB_PASSWORD=root
+DB_PORT=3306
+SECRET_KEY=your-secret-key-here
+FLASK_DEBUG=1
+VERBOSE=ON
 ```
 
-### Login Credentials on Website
-- Username: admin
-- Password: admin
+**Note** : Les variables d'environnement dans `docker-compose.yml` écrasent ces valeurs par défaut.
+
+### 3. Récupérer les Images depuis Docker Hub
+
+Au lieu de construire localement, récupérez les images pré-construites :
+
+```bash
+# Récupérer les images de développement et production
+docker compose pull
+```
+
+Si vous devez construire localement :
+
+```bash
+# Construire toutes les images
+docker compose build
+
+# Ou construire des services spécifiques
+docker compose build app-dev
+docker compose build app-prod
+```
+
+---
+
+## 🚀 Lancement de l'Application
+
+### Démarrer Tous les Services
+
+```bash
+# Démarrer en mode détaché
+docker compose up -d
+
+# Voir les logs
+docker compose logs -f
+
+# Voir les logs d'un service spécifique
+docker compose logs -f app-dev
+```
+
+### Démarrer des Environnements Spécifiques
+
+```bash
+# Développement uniquement
+docker compose up -d app-dev db-dev
+
+# Production uniquement
+docker compose up -d app-prod db-prod
+```
+
+### Vérifier les Services
+
+```bash
+# Vérifier les conteneurs en cours d'exécution
+docker compose ps
+
+# Devrait afficher :
+# basketstats-dev         running   0.0.0.0:5000->5000/tcp
+# basketstats-mysql-dev   running   0.0.0.0:3308->3306/tcp
+# basketstats-prod        running   0.0.0.0:5001->5000/tcp
+# basketstats-mysql-prod  running   0.0.0.0:3309->3306/tcp
+```
+
+### Accéder à l'Application
+
+- **Développement** : [http://localhost:5000](http://localhost:5000)
+- **Production** : [http://localhost:5001](http://localhost:5001)
+
+---
+
+## 🔐 Identifiants de Connexion dans l'Application
+
+### Administrateur
+
+```
+Nom d'utilisateur : admin
+Mot de passe : admin
+```
+
+### Entraîneurs d'Équipe
+
+| Équipe | Nom d'utilisateur | Mot de passe |
+|--------|-------------------|--------------|
+| Bulle | bulle | bullebasket |
+| Sarine | sarine | sarinebasket |
+| Veveyse | veveyse | veveysebasket |
+| Villars | villars | villarsbasket |
+| Payerne | payerne | payernebasket |
+| Fribourg | fribourg | fribourgbasket |
+| Courtepin | courtepin | courtepinbasket |
+| Marly | marly | marlybasket |
+
+---
+
+## 🗄️ Gestion de la Base de Données
+
+### Accéder au Shell MySQL
+
+```bash
+# Base de données de développement
+docker exec -it basketstats-mysql-dev mysql -u root -proot basketstats_dev
+
+# Base de données de production
+docker exec -it basketstats-mysql-prod mysql -u root -proot basketstats_prod
+```
+
+### Voir les Tables
+
+```bash
+# Dans le shell MySQL
+SHOW TABLES;
+SELECT COUNT(*) FROM t_match;  # Vérifier les données
+```
+
+### Réinitialiser la Base de Données
+
+```bash
+# Arrêter les services et supprimer les volumes
+docker compose down -v
+
+# Redémarrer (réimportera les dumps SQL)
+docker compose up -d
+```
+
+---
+
+## 🔧 Workflow de Développement
+
+### Effectuer des Modifications de Code
+
+L'environnement de développement utilise des montages de volumes pour le rechargement automatique :
+
+1. Modifiez les fichiers dans le répertoire `flaskr/`
+2. Enregistrez les modifications
+3. Flask se recharge automatiquement
+4. Rafraîchissez le navigateur pour voir les mises à jour
+
+**Aucun redémarrage de conteneur nécessaire !**
+
+### Voir les Logs en Temps Réel
+
+```bash
+# Tous les services
+docker compose logs -f
+
+# Service spécifique avec sortie détaillée
+docker compose logs -f app-dev
+```
+
+---
+
+## 🏭 Déploiement en Production
+
+### Utilisation des Images Docker Hub
+
+Le `docker-compose.yml` est déjà configuré pour utiliser les images depuis Docker Hub (`mtiii/basketstats:prod` et `mtiii/basketstats:dev`).
+
+### Déployer en Production
+
+```bash
+# Production
+git clone https://github.com/RovereRicardo/Docker_347.git
+cd Docker_347
+
+# Récupérer les dernières images
+docker compose pull
+
+# Démarrer les services de production
+docker compose up -d app-prod db-prod
+
+# Vérifier l'état
+docker compose ps
+```
+
+### Déployer en Developpement
+
+```bash
+# Production
+git clone https://github.com/RovereRicardo/Docker_347.git
+cd Docker_347
+
+# Récupérer les dernières images
+docker compose pull
+
+# Démarrer les services de production
+docker compose up -d app-dev db-dev
+
+# Vérifier l'état
+docker compose ps
+```
+
+### Mettre à Jour en Développement
+
+```bash
+# Récupérer les dernières images
+docker pull mtiii/basketstats:dev
+
+# Recréer le conteneur
+docker compose up -d --force-recreate app-dev
+```
+
+---
+
+## 🧹 Nettoyage
+
+### Arrêter les Services
+
+```bash
+# Arrêter tous les services
+docker compose down
+
+# Arrêter et supprimer les volumes (supprime les données !)
+docker compose down -v
+```
+
+### Supprimer les Images
+
+```bash
+# Supprimer les images de l'application
+docker rmi mtiii/basketstats:dev mtiii/basketstats:prod
+
+# Supprimer toutes les images non utilisées
+docker image prune -a
+```
+
+### Réinitialisation Complète
+
+```bash
+# Tout arrêter et nettoyer
+docker compose down -v
+docker system prune -a --volumes
+
+# Redémarrer à neuf
+docker compose up -d
+```
+
+---
+
+## 📊 Surveillance
+
+### Utilisation des Ressources
+
+```bash
+# Voir la consommation de ressources
+docker stats
+
+# Voir un conteneur spécifique
+docker stats basketstats-dev
+```
+
+### Vérifications de Santé
+
+Les deux bases de données incluent des vérifications de santé qui vérifient que MySQL répond :
+
+```yaml
+healthcheck:
+  test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 30s
+```
+
+---
+
+## 🔗 Commandes Utiles
+
+```bash
+# Voir tous les conteneurs
+docker compose ps
+
+# Voir les logs
+docker compose logs -f
+
+# Redémarrer un service spécifique
+docker compose restart app-dev
+
+# Exécuter une commande dans un conteneur
+docker compose exec app-dev flask --help
+
+# Accéder au shell d'un conteneur
+docker compose exec app-dev /bin/bash
+
+# Mettre à jour les images
+docker compose pull
+
+# Reconstruire et redémarrer
+docker compose up -d --build
+```
+
+---
+
+## 📚 Ressources Supplémentaires
+
+- [Documentation Docker](https://docs.docker.com/)
+- [Documentation Docker Compose](https://docs.docker.com/compose/)
+- [Documentation Flask](https://flask.palletsprojects.com/)
+- [Documentation MySQL](https://dev.mysql.com/doc/)
+
+---
+
+## 👨‍💻 Auteur
+
+**Ricardo Rovere**
+
+**Santos Macuacua**
+
+**Havana Ali**
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/RovereRicardo)
