@@ -1,7 +1,11 @@
 services:
   # Environnement de développement
   app-dev:
+    build:
+      context: .
+      target: development
     image: mtiii/basketstats:dev
+    platform: linux/amd64
     container_name: basketstats-dev
     ports:
       - "5000:5000"
@@ -29,6 +33,7 @@ services:
   # Base de données MySQL pour développement
   db-dev:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: basketstats-mysql-dev
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -50,7 +55,11 @@ services:
 
   # Environnement de production
   app-prod:
+    build:
+      context: .
+      target: production
     image: mtiii/basketstats:prod
+    platform: linux/amd64
     container_name: basketstats-prod
     ports:
       - "5001:5000"
@@ -75,6 +84,7 @@ services:
   # Base de données MySQL pour production
   db-prod:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: basketstats-mysql-prod
     environment:
       MYSQL_ROOT_PASSWORD: root
