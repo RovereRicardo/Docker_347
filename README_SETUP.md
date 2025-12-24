@@ -3,9 +3,9 @@
 Guide complet pour déployer l'application Basket Stats avec Docker et Docker Compose.
 
 - [GitHub Repository](https://github.com/RovereRicardo/Docker_347)
-- [Docker Hub Repository](https://hub.docker.com/r/RovereRicardo/basketstats)
-- [Docker Hub Image - Développement](https://hub.docker.com/repository/docker/mtiii/basketstats/tags/dev/sha256:cca787973a36dd31b4163dd85d384c82406db591063bd159749ca4b0240bd79a)
-- [Docker Hub Image - Production](https://hub.docker.com/repository/docker/mtiii/basketstats/tags/dev/sha256:cca787973a36dd31b4163dd85d384c82406db591063bd159749ca4b0240bd79a)
+- [Docker Hub Repository](https://hub.docker.com/r/mtiii/basketstats)
+- [Docker Hub Image - Développement](https://hub.docker.com/repository/docker/mtiii/basketstats/tags/dev)
+- [Docker Hub Image - Production](https://hub.docker.com/repository/docker/mtiii/basketstats/tags/prod)
 ---
 ## 🐳 Images
 | Environnement | Commande Docker Pull               |
