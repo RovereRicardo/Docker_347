@@ -80,6 +80,34 @@ Docker_347/
 
 ---
 
+**Verification Mode Debug**
+# Voir les logs
+docker compose logs -f
+
+# Voir les logs d'un service spécifique
+docker compose logs -f app-dev
+docker compose logs -f app-prod
+```
+
+ou 
+
+```bash
+DockerHub -> Containers 
+Choisir le container : app-dev ou app-prod
+Choisir l`onglet `Logs`
+Refraishir la page
+```
+
+**Verification Base de Données**
+```bash
+Environnement de Dev Base de données pré remplis.
+http://localhost:5000/matches -> Matches affiché.
+
+Environnement de Prod Base de données pas remplis.
+http://localhost:5001/matches -> Pas de matchs affiché
+```
+
+
 ## ⚙️ Installation & Configuration
 
 ### 1. Cloner le Dépôt
