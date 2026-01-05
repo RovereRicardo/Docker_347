@@ -183,7 +183,7 @@ docker compose ps
 
 ---
 
-## 🔐 Identifiants de Connexion dans l'Application
+## 🔐 Identifiants de Connexion dans l'Application (Page WEB)
 
 ### Administrateur
 
