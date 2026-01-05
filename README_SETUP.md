@@ -73,7 +73,7 @@ Docker_347/
 |----------------|---------------|-----------|
 | **Modifications du Code** | Rechargement automatique via montage de volumes | Code fixe (reconstruction nécessaire) |
 | **Mode Debug** | `FLASK_DEBUG=1` | `FLASK_DEBUG=0` |
-| **Journalisation** | `VERBOSE=ON` (logs détaillés) | `VERBOSE=OFF` (logs minimaux) |
+| **Journalisation (Logs)** | `VERBOSE=ON` (logs détaillés) | `VERBOSE=OFF` (logs minimaux) |
 | **Base de Données** | Données complètes avec matchs d'exemple | Tables vides (structure uniquement) |
 | **Serveur Web** | Serveur de développement Flask | Gunicorn (4 workers) |
 
