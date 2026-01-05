@@ -81,11 +81,13 @@ Docker_347/
 ---
 
 **Verification Mode Debug**
-**Voir les logs**
+### **Voir les logs**
+
 docker compose logs -f
 
 **Voir les logs d'un service spécifique**
-docker compose logs -f app-dev
+```bash
+cker compose logs -f app-dev
 docker compose logs -f app-prod
 ```
 
