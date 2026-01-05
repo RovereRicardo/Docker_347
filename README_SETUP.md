@@ -141,6 +141,16 @@ docker compose logs -f
 
 # Voir les logs d'un service spécifique
 docker compose logs -f app-dev
+docker compose logs -f app-prod
+```
+
+ou 
+
+```bash
+DockerHub -> Containers 
+Choisir le container : app-dev ou app-prod
+Choisir l`onglet `Logs`
+Refraishir la page
 ```
 
 ### Démarrer des Environnements Spécifiques
